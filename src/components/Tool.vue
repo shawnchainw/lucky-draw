@@ -179,6 +179,20 @@ export default {
           }
         }
       }
+      // 抽完的奖自动排到末尾
+      let i = options.length;
+      while (--i) {
+        const category = options[0].value;
+        if (
+          this.config[category] - (this.result[category]?.length || 0) ===
+          0
+        ) {
+          options.push(options.shift());
+        } else {
+          break;
+        }
+      }
+
       return options;
     }
   },
@@ -290,6 +304,8 @@ export default {
       this.$emit('toggle');
       if (!this.running) {
         this.showSetwat = true;
+        // 自动选择第一个奖项
+        this.form.category = this.categorys[0].value;
       }
     },
     transformList() {
