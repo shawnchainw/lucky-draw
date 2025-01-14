@@ -321,7 +321,7 @@ export default {
       if (this.running) {
         this.audioSrc = bgaudio;
         this.loadAudio();
-
+        if(this.interval) clearInterval(this.interval)
         window.TagCanvas.SetSpeed('rootcanvas', speed());
         this.showRes = true;
         this.running = !this.running;
@@ -363,7 +363,9 @@ export default {
           [category]: oldRes.concat(resArr),
         });
         this.result = data;
-        window.TagCanvas.SetSpeed('rootcanvas', [5, 1]);
+        this.interval = setInterval(() => {
+          window.TagCanvas.SetSpeed('rootcanvas', [5, Math.random() * 10]);
+        }, 100);
         this.running = !this.running;
       }
     },
