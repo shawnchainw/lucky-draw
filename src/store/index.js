@@ -13,12 +13,9 @@ export default new Vuex.Store({
   state: {
     config: {
       name: '年会抽奖',
-      number: 70,
-      firstPrize: 1
+      number: 70
     },
-    result: {
-      firstPrize: []
-    },
+    result: {},
     newLottery: [],
     list: [],
     photos: []
@@ -27,8 +24,7 @@ export default new Vuex.Store({
     setClearConfig(state) {
       state.config = {
         name: '年会抽奖',
-        number: 70,
-        firstPrize: 1
+        number: 70
       };
       state.newLottery = [];
     },
@@ -39,19 +35,14 @@ export default new Vuex.Store({
       state.photos = [];
     },
     setClearResult(state) {
-      state.result = {
-        firstPrize: []
-      };
+      state.result = {};
     },
     setClearStore(state) {
       state.config = {
         name: '年会抽奖',
-        number: 70,
-        firstPrize: 1
+        number: 70
       };
-      state.result = {
-        firstPrize: []
-      };
+      state.result = {};
       state.newLottery = [];
       state.list = [];
       state.photos = [];

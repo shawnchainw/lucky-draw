@@ -2,7 +2,7 @@
   <el-dialog
     :visible="visible"
     :append-to-body="true"
-    width="390px"
+    width="430px"
     @close="$emit('update:visible', false)"
     class="c-LotteryConfig"
   >
@@ -11,11 +11,11 @@
         抽奖配置
       </span>
       <el-button size="mini" @click="addLottery">增加奖项</el-button>
+      <el-button size="mini" type="info" @click="showAddBatch = true"
+        >批量导入</el-button
+      >
       <el-button size="mini" type="primary" @click="onSubmit"
         >保存配置</el-button
-      >
-      <el-button size="mini" @click="$emit('update:visible', false)"
-        >取消</el-button
       >
     </div>
     <div class="container">
@@ -28,14 +28,6 @@
             type="number"
             v-model="form.number"
             :min="1"
-            :step="1"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="一等奖">
-          <el-input
-            type="number"
-            v-model="form.firstPrize"
-            :min="0"
             :step="1"
           ></el-input>
         </el-form-item>
@@ -58,6 +50,30 @@
         </el-form-item>
       </el-form>
     </div>
+
+    <el-dialog
+      :visible.sync="showAddBatch"
+      :append-to-body="true"
+      width="400px"
+    >
+      <el-input
+        type="textarea"
+        :rows="10"
+        class="dialog-showAddLottery"
+        placeholder="请输入对应的数量和奖项(可直接从excel复制)，格式(数量 奖项)，导入的名单将代替号码显示在抽奖中。如：
+5 五等奖-电饭煲
+5 四等奖-电磁炉
+5 三等奖-金条
+				"
+        v-model="listStr"
+      ></el-input>
+      <div class="footer">
+        <el-button size="mini" type="primary" @click="transformList"
+          >确定</el-button
+        >
+        <el-button size="mini" @click="showAddBatch = false">取消</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog
       :visible.sync="showAddLottery"
@@ -103,10 +119,44 @@ export default {
   data() {
     return {
       showAddLottery: false,
-      newLottery: { name: '' }
+      newLottery: { name: '' },
+      showAddBatch: false,
+      listStr: ''
     };
   },
   methods: {
+    transformList() {
+      const listStr = this.listStr;
+      if (!listStr) {
+        this.$message.error('没有数据');
+      }
+      const rows = listStr.split('\n');
+      const form = JSON.parse(JSON.stringify(this.form));
+      console.log(form);
+      if (rows && rows.length > 0) {
+        rows.forEach(item => {
+          const rowList = item.split(/\t|\s/);
+          if (rowList.length >= 2) {
+            const num = Number(rowList[0].trim());
+            const name = rowList[1].trim();
+            if (this.storeNewLottery.find(item => item.name === name)) {
+              this.$message.warning(name + '  重复！ 跳过');
+              return;
+            }
+            const field = this.randomField();
+            const data = {
+              key: field,
+              name
+            };
+            this.$store.commit('setNewLottery', data);
+            form[field] = num;
+            this.showAddBatch = false;
+          }
+        });
+        this.$store.commit('setConfig', form);
+        setData(configField, form);
+      }
+    },
     onSubmit() {
       setData(configField, this.form);
       this.$store.commit('setConfig', this.form);
@@ -148,7 +198,7 @@ export default {
 <style lang="scss">
 .c-LotteryConfig {
   .el-dialog__body {
-    height: 340px;
+    height: 500px;
     .container {
       height: 100%;
       overflow-y: auto;
