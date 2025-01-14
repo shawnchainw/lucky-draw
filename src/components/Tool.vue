@@ -1,6 +1,6 @@
 <template>
   <div id="tool">
-    <el-button @click="startHandler" type="primary" size="mini">{{
+    <el-button @click="startHandler" type="primary" size="medium" style="position:fixed; right: calc(50vw - 120px); height: 120px; width: 220px; top: 40vh; font-size: 40px">{{
       running ? '停止' : '开始'
     }}</el-button>
     <el-button size="mini" @click="showRemoveoptions = true">
