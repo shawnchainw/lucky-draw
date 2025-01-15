@@ -172,10 +172,16 @@ export default {
       return allresult;
     },
     datas() {
-      const { number } = this.config;
-      const nums = number >= 1500 ? 500 : this.config.number;
+      let allResult;
+      if (this.allin) {
+        allResult = [];
+      } else {
+        allResult = JSON.parse(JSON.stringify(this.allresult));
+      }
+      let number = this.config.number;
+      const nums = number >= 1500 ? 500 : (number - allResult.length);
       const configNum = number > 1500 ? Math.floor(number / 3) : number;
-      const randomShowNums = luckydrawHandler(configNum, [], nums);
+      const randomShowNums = luckydrawHandler(configNum, allResult, nums);
       const randomShowDatas = randomShowNums.map((item) => {
         const listData = this.list.find((d) => d.key === item);
         const photo = this.photos.find((d) => d.id === item);
@@ -185,6 +191,17 @@ export default {
           photo: photo ? photo.value : '',
         };
       });
+      if (randomShowDatas.length === 0) {
+        return [
+          { name: '抽完拉！' },
+          { name: '抽完拉！' },
+          { name: '抽完拉！' },
+          { name: '抽完拉！' },
+          { name: '抽完拉！' },
+          { name: '抽完拉！' },
+          { name: '抽完拉！' }
+        ];
+      }
       return randomShowDatas;
     },
     categoryName() {
@@ -232,6 +249,7 @@ export default {
       category: '',
       audioPlaying: false,
       audioSrc: bgaudio,
+      allin: false
     };
   },
   watch: {
@@ -321,13 +339,14 @@ export default {
       if (this.running) {
         this.audioSrc = bgaudio;
         this.loadAudio();
-        if(this.interval) clearInterval(this.interval)
+        if (this.interval) clearInterval(this.interval);
         window.TagCanvas.SetSpeed('rootcanvas', speed());
         this.showRes = true;
         this.running = !this.running;
         this.$nextTick(() => {
           this.reloadTagCanvas();
         });
+        this.allin = false;
       } else {
         this.showRes = false;
         if (!form) {
@@ -339,6 +358,11 @@ export default {
 
         const { number } = config;
         const { category, mode, qty, remain, allin } = form;
+        this.allin = allin;
+        if (allin)
+          this.$nextTick(() => {
+            this.reloadTagCanvas();
+          });
         let num = 1;
         if (mode === 1 || mode === 5) {
           num = mode;
