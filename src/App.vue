@@ -16,7 +16,8 @@
           <a
             href="javascript:void(0);"
             :style="{
-              color: '#fff',
+              color: '#FFFF00',
+              'font-size': '100'
             }"
           >
             {{ item.name ? item.name : item.key }}
@@ -93,9 +94,6 @@
     />
     <Result :visible.sync="showResult"></Result>
 
-    <span class="copy-right">
-      Copyright©zhangyongfeng5350@gmail.com
-    </span>
 
     <audio
       id="audiobg"
@@ -401,7 +399,7 @@ export default {
 #root {
   height: 100%;
   position: relative;
-  background-image: url('./assets/bg1.jpg');
+  background-image: url('./assets/bg4.jpg');
   background-size: 100% 100%;
   background-position: center center;
   background-repeat: no-repeat;
