@@ -1,8 +1,11 @@
 <template>
   <div id="tool">
-    <el-button @click="startHandler" type="primary" size="medium" style="position:fixed; right: calc(50vw - 120px); height: 120px; width: 220px; top: 40vh; font-size: 40px">{{
-      running ? '停止' : '开始'
+    <el-button @click="startHandler" type="primary" size="medium" style="position:fixed; right: calc(50vw - 140px); height: 120px; width: 270px; top: 40vh; font-size: 40px">{{
+      running ? '停止' : '抽取获奖者'
     }}</el-button>
+    <el-button size="mini" @click="fullscreem">
+      全屏
+    </el-button>
     <el-button size="mini" @click="showRemoveoptions = true">
       重置
     </el-button>
@@ -221,6 +224,15 @@ export default {
     }
   },
   methods: {
+    fullscreem() {
+      const html = document.querySelector('html');
+      if (document.fullscreenElement){
+        document.exitFullscreen();
+      } else {
+        html.requestFullscreen();
+      }
+
+    },
     resetConfig() {
       const type = this.removeInfo.type;
       this.$confirm('此操作将重置所选数据，是否继续?', '提示', {
